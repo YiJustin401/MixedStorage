@@ -39,7 +39,7 @@ void BTreePlusStorage::set(const String& key, const String& value)
 
 String BTreePlusStorage::get(const String& key)
 {
-    return "";
+    return "hello";
 }
 
 void BTreePlusStorage::remove(const String& key)

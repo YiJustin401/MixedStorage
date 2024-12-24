@@ -8,7 +8,7 @@ class Exception : public std::exception
 public:
     Exception(const String& message) : message(message) {}
 
-    const String& getMessage() const { return message + what(); }
+    const String getMessage() const { return message + what(); }
 
 private:
     String message;

@@ -1,7 +1,7 @@
 #include <fcntl.h>
 
 #include <common/Exception.h>
-#include <FileStorage.h>
+#include <storage/FileStorage.h>
 
 
 namespace MixS
@@ -19,7 +19,8 @@ FileStorage::FileStorage(const String& filename)
 
 FileStorage::~FileStorage()
 {
-    close(file_descriptor);
+    // close(file_descriptor);
+    /// @todo Implement this
 }
 
 void FileStorage::init()
