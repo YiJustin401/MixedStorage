@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <base/types.h>
 #include <storage/Storage.h>
 
