@@ -1,11 +1,13 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.20)
+set(CMAKE_CXX_STANDARD 20)
 
-# 设置项目名称和版本
-project(MyProject VERSION 1.0)
+project(CxxTestDemo LANGUAGES C CXX)
 
-# 指定 C++ 标准
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+project(MixedStorage VERSION 0.0.1)
+
+add_subdirectory(contrib)
+
+include_directories(contrib/googletest/googletest/include)
 
 include_directories(src)
 
@@ -19,3 +21,4 @@ file(GLOB_RECURSE SOURCES
 
 add_executable(BTreeTest src/storage/test/main.cpp)
 target_sources(BTreeTest PRIVATE ${SOURCES})
+target_link_libraries(BTreeTest gtest_main)
