@@ -26,13 +26,16 @@ public:
 
     std::vector<String> rangeGet(const String& start, const String& end);
 private:
-    // BTreePlusNodePtr SplitNode(BTreePlusNodePtr node, String& up_key);
-    void insertNonFull(BTreePlusInternalNodePtr node, const String& key);
-    void splitchild(BTreePlusInternalNodePtr parent, size_t index, BTreePlusInternalNodePtr child);
+    /// @brief Insert a key-value pair into a non-full node.
+    /// @param node The node to insert the key-value pair.
+    /// @param key The key to insert.
+    /// @param value The value to insert
+    void insertNonFull(BTreePlusNodePtr node, const String& key, const String& value);
+    void splitchild(BTreePlusNodePtr parent, size_t index, BTreePlusNodePtr child);
 
 private:
     // TODO: add your data members here
-    BTreePlusInternalNodePtr root;
+    BTreePlusNodePtr root;
     BTreePlusLeafNodePtr leaf_head;
     size_t order;
 
