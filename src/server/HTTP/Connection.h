@@ -13,9 +13,7 @@ public:
         : socket(ioContext)
     {}
 
-    Connection(const Connection & connection)
-        : socket(std::move(connection.socket))
-    {}
+    Connection(const Connection & connection) = delete;
 
     Connection(Connection && connection) noexcept
         : socket(std::move(connection.socket))

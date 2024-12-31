@@ -22,7 +22,7 @@ public:
         }
         else
         {
-            Connection connection = connections.front();
+            Connection connection = std::move(connections.front());
             connections.pop_front();
             return connection;
         }

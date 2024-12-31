@@ -17,6 +17,8 @@ file(GLOB_RECURSE SOURCES
     src/network/*.cpp
     src/replication/*.cpp
     src/scheduler/*.cpp
+    src/server/*.cpp
+    src/server/*.h
     src/storage/*.cpp
 )
 
