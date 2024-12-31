@@ -26,7 +26,7 @@ public:
     {
         return block_id == rhs.block_id && block_size == rhs.block_size && checksum == rhs.checksum && create_time == rhs.create_time;
     }
-}
+};
 
 
 

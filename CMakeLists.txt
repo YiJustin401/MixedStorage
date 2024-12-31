@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.20)
 set(CMAKE_CXX_STANDARD 20)
 
-project(CxxTestDemo LANGUAGES C CXX)
-
 project(MixedStorage VERSION 0.0.1)
 
 add_subdirectory(contrib)
 
 include_directories(contrib/googletest/googletest/include)
+
+#boost asio
+include_directories(contrib/boost/libs/asio/include)
 
 include_directories(src)
 

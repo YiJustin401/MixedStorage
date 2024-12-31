@@ -4,6 +4,8 @@
 
 #include <base/types.h>
 #include <storage/Storage.h>
+#include <storage/FileMetadata.h>
+#include <storage/BlockMetadata.h>
 
 namespace MixS
 {
@@ -21,4 +23,9 @@ public:
     virtual VALUE get(const KEY& key) = 0;
     virtual void remove(const KEY& key) = 0;
 };
+
+using FileMetadataStorage = StorageEngine<String, FileMetadata>;
+using FileMetadataStoragePtr = std::shared_ptr<FileMetadataStorage>;
+using BlockMetadataStorage = StorageEngine<String, BlockMetadata>;
+using BlockMetadataStoragePtr = std::shared_ptr<BlockMetadataStorage>;
 }
