@@ -20,9 +20,28 @@ public:
     virtual bool isFull() const = 0;
 };
 
-class BTreePlusInternalNode : public BTreePlusNode
+template <typename Derived>
+class DV
 {
 public:
+    using Ptr = std::shared_ptr<Derived>;
+    Derived& derived()
+    {
+        return *static_cast<Derived*>(this);
+    }
+
+    const Derived& derived() const
+    {
+        return *static_cast<const Derived*>(this);
+    }
+};
+
+template <typename KEY, typename VALUE>
+class BTreePlusInternalNode : public BTreePlusNode, public DV<BTreePlusInternalNode<KEY, VALUE>>
+{
+public:
+    friend class DV<BTreePlusInternalNode<KEY, VALUE>>;
+    using Ptr = DV<BTreePlusInternalNode<KEY, VALUE>>::Ptr;
     BTreePlusInternalNode() = default;
     ~BTreePlusInternalNode() override = default;
 
@@ -36,13 +55,16 @@ public:
         return keys.size() == 2 * BTreePlusOrder - 1;
     }
 
-    std::vector<String> keys;
+    std::vector<KEY> keys;
     std::vector<BTreePlusNodePtr> children;
 };
 
-class BTreePlusLeafNode : public BTreePlusNode
+template <typename KEY, typename VALUE>
+class BTreePlusLeafNode : public BTreePlusNode, public DV<BTreePlusLeafNode<KEY, VALUE>>
 {
 public:
+    friend class DV<BTreePlusLeafNode<KEY, VALUE>>;
+    using Ptr = DV<BTreePlusLeafNode<KEY, VALUE>>::Ptr;
     BTreePlusLeafNode() = default;
     ~BTreePlusLeafNode() override = default;
 
@@ -56,13 +78,15 @@ public:
         return keys.size() == 2 * BTreePlusOrder - 1;
     }
 
-    std::vector<String> keys;
-    std::vector<String> values;
+    std::vector<KEY> keys;
+    std::vector<VALUE> values;
 
-    BTreePlusLeafNode* next;
+    Ptr next;
 };
 
-using BTreePlusInternalNodePtr = std::shared_ptr<BTreePlusInternalNode>;
-using BTreePlusLeafNodePtr = std::shared_ptr<BTreePlusLeafNode>;
+template <typename KEY, typename VALUE>
+using BTreePlusInternalNodePtr = std::shared_ptr<BTreePlusInternalNode<KEY, VALUE>>;
+template <typename KEY, typename VALUE>
+using BTreePlusLeafNodePtr = std::shared_ptr<BTreePlusLeafNode<KEY, VALUE>>;
 
 } // namespace MixS
