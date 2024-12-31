@@ -1,0 +1,22 @@
+# emacs files                                                                                                                                        
+*~
+*\#
+.tramp_history
+
+# vim cache files
+*.swp
+
+# auto generated files
+*.logrt
+
+/build
+/build_*
+/build-*
+
+# logs
+*.log
+*.debuglog
+*.stderr
+*.stdout
+
+.vscode
