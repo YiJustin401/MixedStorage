@@ -41,7 +41,7 @@ class BTreePlusInternalNode : public BTreePlusNode, public DV<BTreePlusInternalN
 {
 public:
     friend class DV<BTreePlusInternalNode<KEY, VALUE>>;
-    using Ptr = DV<BTreePlusInternalNode<KEY, VALUE>>::Ptr;
+    using Ptr = typename DV<BTreePlusInternalNode<KEY, VALUE>>::Ptr;
     BTreePlusInternalNode() = default;
     ~BTreePlusInternalNode() override = default;
 
@@ -64,7 +64,7 @@ class BTreePlusLeafNode : public BTreePlusNode, public DV<BTreePlusLeafNode<KEY,
 {
 public:
     friend class DV<BTreePlusLeafNode<KEY, VALUE>>;
-    using Ptr = DV<BTreePlusLeafNode<KEY, VALUE>>::Ptr;
+    using Ptr = typename DV<BTreePlusLeafNode<KEY, VALUE>>::Ptr;
     BTreePlusLeafNode() = default;
     ~BTreePlusLeafNode() override = default;
 
