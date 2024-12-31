@@ -29,7 +29,6 @@ jobs:
         cmake ..
         make
 
-   - name: Run tests
+    - name: Run tests
       run: |
         cd build && ./BTreeTest
-        
