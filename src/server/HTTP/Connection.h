@@ -35,6 +35,7 @@ public:
     {
         socket.close();
     }
+
 private:
     Socket socket;
 };
