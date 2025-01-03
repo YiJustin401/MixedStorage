@@ -1,27 +1,51 @@
 #pragma once
 
 #include <base/types.h>
-#include <common/IBuffer.h>
+#include <common/BufferBase.h>
 
 namespace MixS
 {
-class ReadBuffer : public IBuffer
+class ReadBuffer : public BufferBase
 {
 public:
-    ReadBuffer(BufferPtr buffer, SizeType size)
-        : IBuffer(buffer, size)
+    ReadBuffer(Position buffer, SizeType size)
+        : BufferBase(buffer, size)
     {
+    }
+
+    bool next()
+    {
+        bool res = nextImpl();
+        next_working_set_bytes = 0;
+        return res;
+    }
+
+    bool eof()
+    {
+        return !next();
     }
 
     SizeType read(void * dest, SizeType size)
     {
-        if (offset + size > data_size)
+        SizeType byties_copied = 0;
+        while (byties_copied < size && !eof())
         {
-            return;
+            SizeType bytes_to_copy = std::min(size - byties_copied, SizeType(working_set.end() - pos));
+            std::memcpy(dest + byties_copied, pos, bytes_to_copy);
+            pos += bytes_to_copy;
+            byties_copied += bytes_to_copy;
         }
-        std::memcpy(dest, buffer + offset, size);
-        offset += size;
-        return size;
+        return byties_copied;
+    }
+protected:
+    SizeType next_working_set_bytes = 0;
+
+private:
+    /// @brief read next data into the buffer
+    /// @return read failed or not
+    virtual bool nextImpl()
+    {
+        return false;
     }
 };
 

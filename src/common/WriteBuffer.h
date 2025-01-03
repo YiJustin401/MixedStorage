@@ -1,28 +1,60 @@
 #pragma once
 
 #include <base/types.h>
-#include <common/IBuffer.h>
+#include <common/BufferBase.h>
 
 namespace MixS
 {
-class WriteBuffer : public IBuffer
+class WriteBuffer : public BufferBase
 {
 public:
-    WriteBuffer(BufferPtr buffer, SizeType size)
-        : IBuffer(buffer, size)
+    WriteBuffer(Position pos, SizeType size)
+        : BufferBase(pos, size)
     {
     }
 
-    SizeType write(const void * src, SizeType size)
+    void next()
     {
-        if (offset + size > data_size)
-        {
+        if (!offset())
             return;
-        }
-        std::memcpy(buffer + offset, src, size);
-        offset += size;
-        return size;
+        
+        SizeType bytes_in_buffer = offset();
+
+        nextImpl();
+
+        pos = working_set.begin();
     }
+
+    void nextIfNotEnd()
+    {
+        if (available() > 0)
+            next();
+    }
+
+    void write(const Position from, SizeType size)
+    {
+        SizeType bytes_written = 0;
+
+        while (bytes_written < size)
+        {
+            SizeType bytes_to_write = std::min(size - bytes_written, SizeType(working_set.end() - pos));
+            std::memcpy(pos, from + bytes_written, bytes_to_write);
+            pos += bytes_to_write;
+            bytes_written += bytes_to_write;
+        }
+    }
+
+    void write(char c)
+    {
+        nextIfNotEnd();
+
+        *pos = c;
+        ++pos;
+    }
+private:
+    virtual void nextImpl() { /** do nothing */ }
+
+
 };
 
 
