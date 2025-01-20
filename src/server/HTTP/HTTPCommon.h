@@ -12,6 +12,13 @@ using Resolver = boost::asio::ip::tcp::resolver;
 using Streambuf = boost::asio::streambuf;
 using Error = boost::system::error_code;
 using Address = boost::asio::ip::address;
+using AddressV4 = boost::asio::ip::address_v4;
+using AddressV6 = boost::asio::ip::address_v6;
 using Buffer = boost::asio::mutable_buffer;
+
+Address make_address(const std::string & str)
+{
+    return boost::asio::ip::make_address(str);
+}
 
 } // namespace MixS

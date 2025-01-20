@@ -31,7 +31,7 @@ public:
         while (byties_copied < size && !eof())
         {
             SizeType bytes_to_copy = std::min(size - byties_copied, SizeType(working_set.end() - pos));
-            std::memcpy(dest + byties_copied, pos, bytes_to_copy);
+            std::memcpy((char *)(dest) + byties_copied, pos, bytes_to_copy);
             pos += bytes_to_copy;
             byties_copied += bytes_to_copy;
         }

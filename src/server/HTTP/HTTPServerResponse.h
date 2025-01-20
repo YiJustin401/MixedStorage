@@ -1,8 +1,8 @@
 #pragma once
 
 #include <base/types.h>
-
-#include <iostream>
+#include <common/ReadBuffer.h>
+#include <common/WriteBuffer.h>
 
 
 namespace MixS
@@ -50,15 +50,15 @@ public:
     HTTPServerResponse();
     HTTPServerResponse(const HTTPStatus & status, const String & response, const String & version);
 
-    void setStatus(const HTTPStatus & status);
-    HTTPStatus getStatus() const;
-    void setResponse(const String & response);
-    String getResponse() const;
-    void setVersion(const String & version);
-    String getVersion() const;
+    void setStatus(const HTTPStatus & status) { this->status = status; }
+    HTTPStatus getStatus() const { return status; }
+    void setResponse(const String & response) { this->response = response; }
+    String getResponse() const { return response; }
+    void setVersion(const String & version) { this->version = version; }
+    String getVersion() const { return version; }
 
-    void write(std::ostream & stream) const;
-    void read(std::istream & stream);
+    void write(std::unique_ptr<WriteBuffer> & write_buffer) const;
+    void read(std::unique_ptr<ReadBuffer> & read_buffer);
 
 private:
     HTTPStatus status;

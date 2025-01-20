@@ -38,7 +38,7 @@ public:
 protected:
     Position pos;
     Buffer working_set;
-}
+};
 
 
 } // namespace MixS

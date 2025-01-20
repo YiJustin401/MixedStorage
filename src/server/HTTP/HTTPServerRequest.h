@@ -7,6 +7,8 @@
 #include <server/HTTP/HTTPServerResponse.h>
 #include <server/HTTP/HTTPCommon.h>
 #include <server/HTTP/Connection.h>
+#include <common/ReadBuffer.h>
+#include <common/WriteBuffer.h>
 
 namespace MixS
 {
@@ -24,6 +26,10 @@ enum class HTTPMethod
     CONNECT
 };
 
+
+
+/// @brief 
+/// request read file, write file, remove file, etc.
 class HTTPServerRequest
 {
 public:
@@ -75,21 +81,9 @@ public:
         headers.push_back(std::make_pair(key, value));
     }
 
-    void read(std::istream & is)
-    {
-        // read the request
-    }
+    void read(std::unique_ptr<ReadBuffer> & read_buffer);
 
-    void write(std::ostream & os)
-    {
-        // write the request
-    }
-
-    // std::istream & getInputStream()
-    // {
-        
-    // }
-
+    void write(std::unique_ptr<WriteBuffer> & write_buffer) const;
 private:
     Connection connection;
 
