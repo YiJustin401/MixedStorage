@@ -1,4 +1,5 @@
 #include <utils/ThreadPool.h>
+#include <logger/log_helper.h>
 
 template <typename Thread>
 ThreadPoolImpl<Thread>::ThreadPoolImpl(size_t max_threads_)
@@ -16,19 +17,27 @@ bool ThreadPoolImpl<Thread>::trySchedule(Job job) noexcept
 template <typename Thread>
 void ThreadPoolImpl<Thread>::joinAll()
 {
-    std::unique_lock<std::mutex> lock(mutex);
-    job_finished.wait(lock, [this]() { return threads.empty(); });
+    {
+        std::unique_lock<std::mutex> lock(mutex);
+        job_finished.wait(lock, [this]() { return jobs.empty(); });
+        stop.store(true);
+        job_added.notify_all();
+    }
+    for (auto &thread : threads)
+    {
+        thread.join();
+    }
 }
 
 template <typename Thread>
 void ThreadPoolImpl<Thread>::worker(typename std::list<Thread>::iterator /*thread_it*/)
 {
-    while (true)
+    while (!stop.load())
     {
         Job job;
         {
             std::unique_lock<std::mutex> lock(mutex);
-            job_added.wait(lock, [this]() { return stop || !jobs.empty(); });
+            job_added.wait(lock, [this]() { return stop.load() || !jobs.empty(); });
             if (stop && jobs.empty())
             {
                 return;
@@ -46,14 +55,17 @@ template <typename Thread>
 template <typename ReturnType>
 ReturnType ThreadPoolImpl<Thread>::scheduleImpl(Job job)
 {
-    std::unique_lock<std::mutex> lock(mutex);
-    while (threads.size() >= max_threads)
     {
-        job_added.wait(lock);
+        std::unique_lock<std::mutex> lock(mutex);
+        if (threads.size() <= max_threads)
+        {
+            threads.emplace_front();
+            threads.front() = std::thread(&ThreadPoolImpl<Thread>::worker, this, threads.begin());
+        }
+        // job_added.wait(lock);
+        jobs.push(job);
+        job_added.notify_all();
     }
-    threads.emplace_front();
-    threads.front() = std::thread(&ThreadPoolImpl<Thread>::worker, this, threads.begin());
-    jobs.push(job);
 
     if constexpr (!std::is_void_v<ReturnType>)
     {

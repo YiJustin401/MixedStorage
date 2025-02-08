@@ -7,6 +7,7 @@
 #include <functional>
 #include <mutex>
 #include <condition_variable>
+#include <atomic>
 
 template <typename Thread>
 class ThreadPoolImpl
@@ -28,7 +29,7 @@ protected:
 
 protected:
     size_t max_threads;
-    bool stop = false;
+    std::atomic<bool> stop = false;
 
     std::list<Thread> threads;
     std::queue<Job> jobs;
