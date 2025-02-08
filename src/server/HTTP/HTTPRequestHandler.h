@@ -10,8 +10,8 @@ namespace MixS
 class HTTPRequestHandler
 {
 public:
-    HTTPRequestHandler();
-    virtual ~HTTPRequestHandler();
+    HTTPRequestHandler() = default;
+    virtual ~HTTPRequestHandler() = default;
     virtual void handle(HTTPServerRequest & request, HTTPServerResponse & response) = 0;
 
 private:

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "HTTPHandlerFactory.h"
 
 namespace MixS

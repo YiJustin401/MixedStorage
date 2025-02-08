@@ -1,5 +1,6 @@
 #include "HttpServer.h"
 #include <server/HTTP/HTTPServerRequest.h>
+#include <server/HTTP/HTTPServerResponse.h>
 #include <logger/log_helper.h>
 #include <common/WriteBuffer.h>
 

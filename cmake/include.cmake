@@ -1,0 +1,7 @@
+function(MIXED_EXECUTE_BINARY target sources link_libraries)
+    add_executable(${target} ${sources})
+    message(STATUS "target: ${target}")
+    message(STATUS "sources: ${sources}")
+    message(STATUS "link_libraries: ${link_libraries}")
+    target_link_libraries(${target} PUBLIC mixed_storage_lib ${link_libraries})
+endfunction()

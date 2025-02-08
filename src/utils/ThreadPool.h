@@ -1,64 +1,40 @@
 #pragma once
 
 #include <vector>
+#include <list>
 #include <queue>
 #include <thread>
 #include <functional>
+#include <mutex>
+#include <condition_variable>
 
-
-template <typename F = std::function<void()>>
-class ThreadPool
+template <typename Thread>
+class ThreadPoolImpl
 {
 public:
-    ThreadPool(size_t size)
-        : size(size)
-    {
-        for (size_t i = 0; i < size; i++)
-        {
-            threads.push_back(std::thread([this] {
-                while (!stop)
-                {
-                    std::unique_lock<std::mutex> lock(mutex);
-                    if (!tasks.empty())
-                    {
-                        F task = std::move(tasks.front());
-                        tasks.pop();
-                        lock.unlock();
-                        task();
-                    }
-                    else
-                    {
-                        cv.wait(lock);
-                    }
-                }
-            }));
-        }
-    }
+    using Job = std::function<void()>;
+    ThreadPoolImpl(size_t max_threads_);
 
-    void addTask(F && task)
-    {
-        std::unique_lock<std::mutex> lock(mutex);
-        tasks.push(std::forward<F>(task));
-        cv.notify_one();
-    }
+    bool trySchedule(Job job) noexcept;
 
-    void stop()
-    {
-        stop = true;
-        cv.notify_all();
-        for (auto & thread : threads)
-        {
-            thread.join();
-        }
-    }
+    void joinAll();
 
-private:
-    size_t size = 0;
+    void worker(typename std::list<Thread>::iterator thread_it);
+
+protected:
+    template <typename ReturnType>
+    ReturnType scheduleImpl(Job job);
+
+
+protected:
+    size_t max_threads;
     bool stop = false;
 
-    std::vector<std::thread> threads;
-    std::queue<F> tasks;
+    std::list<Thread> threads;
+    std::queue<Job> jobs;
     std::mutex mutex;
-    std::condition_variable cv;
+    std::condition_variable job_finished;
+    std::condition_variable job_added;
+};
 
-}; // class ThreadPool
+using ThreadPool = ThreadPoolImpl<std::thread>;

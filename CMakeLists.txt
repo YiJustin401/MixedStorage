@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD 20)
 project(MixedStorage VERSION 0.0.1)
 
 add_subdirectory(contrib)
+include(cmake/gtest.cmake)
+include(cmake/include.cmake)
 
 include_directories(src)
 
@@ -19,8 +21,18 @@ file(GLOB_RECURSE SOURCES
     src/server/*.cpp
     src/server/*.h
     src/storage/*.cpp
+    src/utils/*.h
+    src/utils/*.cpp
 )
+# remove gtest files
+list(FILTER SOURCES EXCLUDE REGEX ".*gtest_.*")
 
-add_executable(BTreeTest src/storage/test/main.cpp)
-target_sources(BTreeTest PRIVATE ${SOURCES})
-target_link_libraries(BTreeTest PUBLIC gtest_main boost_asio fmt)
+add_library(mixed_storage_lib STATIC ${SOURCES})
+target_link_libraries(mixed_storage_lib PUBLIC boost_asio fmt)
+
+option(ENABLE_TEST "Enable test" ON)
+if (ENABLE_TEST)
+    GTEST_SOURCES(src/storage/test/gtest_BTreeTest.cpp)
+    GTEST_SOURCES(src/utils/test/gtest_threadpool.cpp)
+    MIXED_EXECUTE_BINARY(mixed_storage_test "${gtest_source_files}" gtest_main)
+endif()
