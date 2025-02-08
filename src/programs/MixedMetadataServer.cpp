@@ -16,9 +16,15 @@ void MixedMetadataServer::start()
     thread_pool.trySchedule([this]() {
         LOG_INFO("MixedMetadataServer start");
     });
+
+    thread_pool.joinAll();
 }
 
-
-
-
 } // namespace MixS
+
+
+int main(int argc, const char** argv) {
+    MixS::MixedMetadataServer server;
+    server.start();
+    return 0;
+}

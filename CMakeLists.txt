@@ -36,3 +36,6 @@ if (ENABLE_TEST)
     GTEST_SOURCES(src/utils/test/gtest_threadpool.cpp)
     MIXED_EXECUTE_BINARY(mixed_storage_test "${gtest_source_files}" gtest_main)
 endif()
+
+MIXED_EXECUTE_BINARY(mixed_metadata_server src/programs/MixedMetadataServer.cpp "")
+MIXED_EXECUTE_BINARY(mixed_storage_server src/programs/MixedStorageServer.cpp "")

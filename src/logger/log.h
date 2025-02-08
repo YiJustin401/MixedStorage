@@ -20,7 +20,7 @@ enum class LogLevel
     ERROR
 };
 
-String levelToString(LogLevel level)
+inline String levelToString(LogLevel level)
 {
     switch (level)
     {
